@@ -10,9 +10,10 @@ DATABASE_URL = (
     f"postgresql://{os.getenv('POSTGRES_USER', 'postgres')}"
     f":{os.getenv('POSTGRES_PASSWORD', 'postgres')}"
     f"@{os.getenv('POSTGRES_HOST', 'localhost')}"
-    f":{os.getenv('POSTGRES_PORT', '5432')}"
+    f":{int(os.getenv('POSTGRES_PORT', '5432'))}"
     f"/{os.getenv('POSTGRES_DB', 'contextforge')}"
 )
+print("POSTGRES_PORT =", repr(os.getenv('POSTGRES_PORT')))
 
 engine = create_engine(DATABASE_URL, pool_pre_ping=True) 
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
@@ -71,7 +72,6 @@ class EvaluationMetric(Base):
     token_usage = Column(Integer, nullable=True)
     evaluated_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
-# Init
 
 def init_db():
     """Create all tables if they don't exist."""
