@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #0a0a0f;
+  --color-foreground: #e4e4ed;
+  --color-card: #111118;
+  --color-card-foreground: #e4e4ed;
+  --color-primary: #6366f1;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #18181f;
+  --color-secondary-foreground: #e4e4ed;
+  --color-muted: #18181f;
+  --color-muted-foreground: #717182;
+  --color-accent: #22222e;
+  --color-accent-foreground: #e4e4ed;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #ffffff;
+  --color-border: #1e1e2a;
+  --color-input: #1e1e2a;
+  --color-ring: #6366f1;
+  --color-success: #22c55e;
+  --color-success-foreground: #ffffff;
+  --color-warning: #f59e0b;
+  --color-warning-foreground: #000000;
+  --radius: 0.75rem;
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Subtle grid background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+  background-size: 64px 64px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+#root, main {
+  position: relative;
+  z-index: 1;
+}
+
+/* Enter animation */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-enter {
+  animation: fade-up 0.5s ease-out forwards;
+}
+
+.animate-enter-delay-1 { animation-delay: 0.1s; opacity: 0; }
+.animate-enter-delay-2 { animation-delay: 0.2s; opacity: 0; }
+.animate-enter-delay-3 { animation-delay: 0.3s; opacity: 0; }
+.animate-enter-delay-4 { animation-delay: 0.4s; opacity: 0; }
+
+/* Pulse glow */
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 5px rgba(99, 102, 241, 0.1); }
+  50% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.2); }
+}
+
+.glow-pulse {
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #27273a; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #3a3a52; }
