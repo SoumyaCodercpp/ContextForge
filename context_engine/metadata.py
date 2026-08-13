@@ -13,7 +13,11 @@ DATABASE_URL = (
     f":{int(os.getenv('POSTGRES_PORT', '5432'))}"
     f"/{os.getenv('POSTGRES_DB', 'contextforge')}"
 )
-print("POSTGRES_PORT =", repr(os.getenv('POSTGRES_PORT')))
+print("DEBUG DATABASE_URL:", DATABASE_URL)
+print("DEBUG POSTGRES_PORT:", repr(os.getenv('POSTGRES_PORT')))
+print("DEBUG POSTGRES_HOST:", repr(os.getenv('POSTGRES_HOST')))
+print("DEBUG POSTGRES_USER:", repr(os.getenv('POSTGRES_USER')))
+print("DEBUG POSTGRES_DB:", repr(os.getenv('POSTGRES_DB')))
 
 engine = create_engine(DATABASE_URL, pool_pre_ping=True) 
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
