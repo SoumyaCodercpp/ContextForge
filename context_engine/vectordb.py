@@ -9,9 +9,12 @@ load_dotenv()
 QDRANT_HOST = os.getenv("QDRANT_HOST", "localhost")
 QDRANT_PORT = int(os.getenv("QDRANT_PORT", "6333"))
 COLLECTION_NAME = os.getenv("QDRANT_COLLECTION_NAME", "contextforge_docs")
+QDRANT_API_KEY = os.getenv("QDRANT_API_KEY", "")
 
-client = QdrantClient(host=QDRANT_HOST, port=QDRANT_PORT)
-
+if QDRANT_API_KEY:
+    client = QdrantClient(url=QDRANT_HOST, api_key=QDRANT_API_KEY)
+else:
+    client = QdrantClient(host=QDRANT_HOST, port=QDRANT_PORT)
 
 def collection_exists(name=COLLECTION_NAME):
     try:
@@ -54,7 +57,7 @@ def upsert_vectors(points, collection_name=COLLECTION_NAME):
                 payload=p.get("payload", {})
             )
         )
-    client.upsert(collection_name=collection_name, points=qdrant_points) #Sends all points to Qdrant
+    client.upsert(collection_name=collection_name, points=qdrant_points) #Sends all points to Qdrant    
 
 def search_vectors(query_vector, top_k=20, collection_name=COLLECTION_NAME, query_filter=None):
     """Find top_k nearest vectors to query_vector. Returns [{id, score, payload}]."""
