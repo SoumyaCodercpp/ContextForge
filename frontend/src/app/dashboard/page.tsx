@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   Search, ArrowDown, CheckCircle2, XCircle, Zap, Coins,
@@ -9,6 +9,14 @@ import {
 import { searchDocuments, SearchResponse, ScoredChunk } from "@/lib/api";
 
 export default function DashboardPage() {
+  return (
+    <Suspense fallback={null}>
+      <DashboardContent />
+    </Suspense>
+  );
+}
+
+function DashboardContent() {
   const searchParams = useSearchParams();
   const [question, setQuestion] = useState("");
   const [loading, setLoading] = useState(false);
@@ -35,7 +43,6 @@ export default function DashboardPage() {
 
   const handleSearch = () => runSearch(question);
 
-  // Auto-run if question passed via URL (from search page)
   useEffect(() => {
     const q = searchParams.get("q");
     if (q && !hasAutoRun.current) {
@@ -45,7 +52,6 @@ export default function DashboardPage() {
     }
   }, [searchParams]);
 
-  // Stagger reveal stages
   useEffect(() => {
     if (!result || loading) return;
     let current = 0;
