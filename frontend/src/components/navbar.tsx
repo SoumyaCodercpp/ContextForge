@@ -4,11 +4,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Search, Upload, BarChart3, Command, FileText } from "lucide-react";
 
+
 const links = [
   { href: "/upload", label: "Upload", icon: Upload },
   { href: "/documents", label: "Docs", icon: FileText },
   { href: "/search", label: "Search", icon: Search },
   { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
+  { href: "/metrics", label: "Metrics", icon: BarChart3 },
 ];
 
 export function Navbar() {
