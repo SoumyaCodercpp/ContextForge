@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:8000";
+const API_BASE = "https://contextforge-6d9d.onrender.com";
 
 export interface SearchRequest {
   question: string;
