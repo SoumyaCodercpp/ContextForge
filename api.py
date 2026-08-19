@@ -26,7 +26,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -64,13 +64,13 @@ class UploadResponse(BaseModel):
 
 @app.get("/health")
 async def health():
-    """Health check endpoint."""
+    # Health check endpoint.
     return {"status": "healthy", "service": "ContextForge API", "version": "0.1.0"}
 
 
 @app.post("/upload")
 async def upload(files: list[UploadFile] = File(...)):
-    """Upload and index PDF documents."""
+    # Upload and index PDF documents.
     start = time.perf_counter()
     
     if not files:
