@@ -1,19 +1,32 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { FileText } from "lucide-react";
-import { listDocuments, DocumentInfo } from "@/lib/api";
+import { FileText, Trash2 } from "lucide-react";
+import { listDocuments, deleteDocument, DocumentInfo } from "@/lib/api";
 
 export default function DocumentsPage() {
   const [documents, setDocuments] = useState<DocumentInfo[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const loadDocs = () => {
     listDocuments()
       .then(setDocuments)
       .catch(() => {})
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    loadDocs();
   }, []);
+
+  const handleDelete = async (id: number) => {
+    try {
+      await deleteDocument(id);
+      loadDocs();
+    } catch {
+      alert("Failed to delete");
+    }
+  };
 
   return (
     <div className="pt-24 pb-16">
@@ -50,7 +63,13 @@ export default function DocumentsPage() {
                     </p>
                   </div>
                 </div>
-                <span className="text-xs text-muted-foreground">ID: {doc.id}</span>
+                <button
+                  onClick={() => handleDelete(doc.id)}
+                  className="p-2 rounded-lg hover:bg-red-500/10 text-red-400 transition-colors"
+                  title="Delete document"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
               </div>
             ))}
           </div>

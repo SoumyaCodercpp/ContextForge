@@ -211,6 +211,35 @@ async def list_documents():
     finally:
         session.close()
 
+@app.delete("/documents/{document_id}")
+async def delete_document(document_id: int):
+    """Delete a document and all its chunks."""
+    from context_engine.vectordb import delete_by_filter
+    
+    session = SessionLocal()
+    try:
+        # Delete from PostgreSQL
+        doc = session.query(Document).filter(Document.id == document_id).first()
+        if not doc:
+            raise HTTPException(status_code=404, detail="Document not found")
+        
+        session.delete(doc)
+        session.commit()
+        
+        # Delete from Qdrant
+        delete_by_filter({
+            "must": [{"key": "document_id", "match": {"value": document_id}}]
+        })
+        
+        return {"message": f"Deleted document {document_id}"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        session.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        session.close()
+
 
 # Helpers
 

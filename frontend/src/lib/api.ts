@@ -137,6 +137,14 @@ export async function uploadDocuments(files: File[]): Promise<UploadResponse> {
   return res.json();
 }
 
+export async function deleteDocument(id: number): Promise<{ message: string }> {
+  const res = await fetch(`${API_BASE}/documents/${id}`, {
+    method: "DELETE",
+  });
+  if (!res.ok) throw new Error("Failed to delete document");
+  return res.json();
+}
+
 export async function getMetrics(): Promise<MetricsResponse> {
   const res = await fetch(`${API_BASE}/metrics`);
   if (!res.ok) throw new Error("Failed to fetch metrics");
