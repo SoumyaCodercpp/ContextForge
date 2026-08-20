@@ -233,6 +233,7 @@ async def delete_document(document_id: int):
         raise
     except Exception as e:
         session.rollback()
+        print("DELETE ERROR:", str(e))
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         session.close()
