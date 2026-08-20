@@ -13,11 +13,6 @@ DATABASE_URL = (
     f":{int(os.getenv('POSTGRES_PORT', '5432'))}"
     f"/{os.getenv('POSTGRES_DB', 'contextforge')}"
 )
-print("DEBUG DATABASE_URL:", DATABASE_URL)
-print("DEBUG POSTGRES_PORT:", repr(os.getenv('POSTGRES_PORT')))
-print("DEBUG POSTGRES_HOST:", repr(os.getenv('POSTGRES_HOST')))
-print("DEBUG POSTGRES_USER:", repr(os.getenv('POSTGRES_USER')))
-print("DEBUG POSTGRES_DB:", repr(os.getenv('POSTGRES_DB')))
 
 engine = create_engine(DATABASE_URL, pool_pre_ping=True) 
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
@@ -61,7 +56,7 @@ class SearchHistory(Base):
     retrieval_score = Column(Float, nullable=True)
     relevance_score = Column(Float, nullable=True)
     was_selected = Column(Integer, nullable=False, default=0)
-    stage = Column(String(32), nullable=False)  # retrieved, deduplicated, scored, selected
+    stage = Column(String(32), nullable=False)
     searched_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
 class EvaluationMetric(Base):

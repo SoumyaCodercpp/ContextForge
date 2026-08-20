@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field
 
 from context_engine.index import ingest_pdfs, query
 from context_engine.metadata import Document, EvaluationMetric, SearchHistory, SessionLocal, init_db
-from context_engine.vectordb import collection_exists, create_collection, get_collection_info
+from context_engine.vectordb import collection_exists, create_collection, get_collection_info, delete_document_vectors
 from context_engine.embedder import get_embedding_dimension
 
 load_dotenv()
@@ -64,13 +64,13 @@ class UploadResponse(BaseModel):
 
 @app.get("/health")
 async def health():
-    # Health check endpoint.
+    """Health check endpoint."""
     return {"status": "healthy", "service": "ContextForge API", "version": "0.1.0"}
 
 
 @app.post("/upload")
 async def upload(files: list[UploadFile] = File(...)):
-    # Upload and index PDF documents.
+    """Upload and index PDF documents."""
     start = time.perf_counter()
     
     if not files:
@@ -211,25 +211,22 @@ async def list_documents():
     finally:
         session.close()
 
+
 @app.delete("/documents/{document_id}")
 async def delete_document(document_id: int):
-    """Delete a document and all its chunks."""
-    from context_engine.vectordb import delete_by_filter
-    
+    """Delete a document, its chunks, and all associated vectors."""
     session = SessionLocal()
     try:
-        # Delete from PostgreSQL
         doc = session.query(Document).filter(Document.id == document_id).first()
         if not doc:
             raise HTTPException(status_code=404, detail="Document not found")
         
+        # Delete from PostgreSQL (cascades to chunks)
         session.delete(doc)
         session.commit()
         
         # Delete from Qdrant
-        delete_by_filter({
-            "must": [{"key": "document_id", "match": {"value": document_id}}]
-        })
+        delete_document_vectors(document_id)
         
         return {"message": f"Deleted document {document_id}"}
     except HTTPException:

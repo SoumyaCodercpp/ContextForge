@@ -37,18 +37,10 @@ def get_collection_info(name=COLLECTION_NAME):
 def delete_collection(name=COLLECTION_NAME):
     client.delete_collection(name)
 
-# Vector operations
 
 def upsert_vectors(points, collection_name=COLLECTION_NAME):
     """Insert or update points. Each point: {id, vector, payload}."""
     qdrant_points = []
-
-    """
-    [
-        {"id": 1, "vector": [0.023, -0.451, ...], "payload": {"text": "...", "document_id": 1}},
-        {"id": 2, "vector": [0.018, -0.432, ...], "payload": {"text": "...", "document_id": 1}},
-    ]
-    """
     for p in points:
         qdrant_points.append(
             qdrant_models.PointStruct(
@@ -57,7 +49,8 @@ def upsert_vectors(points, collection_name=COLLECTION_NAME):
                 payload=p.get("payload", {})
             )
         )
-    client.upsert(collection_name=collection_name, points=qdrant_points) #Sends all points to Qdrant    
+    client.upsert(collection_name=collection_name, points=qdrant_points)
+
 
 def search_vectors(query_vector, top_k=20, collection_name=COLLECTION_NAME, query_filter=None):
     """Find top_k nearest vectors to query_vector. Returns [{id, score, payload}]."""
@@ -82,12 +75,14 @@ def search_vectors(query_vector, top_k=20, collection_name=COLLECTION_NAME, quer
         })
     return output
 
+
 def delete_vectors(point_ids, collection_name=COLLECTION_NAME):
     """Delete specific points by ID."""
     client.delete(
         collection_name=collection_name,
         points_selector=qdrant_models.PointIdsList(points=point_ids),
     )
+
 
 def delete_by_filter(filter_dict, collection_name=COLLECTION_NAME):
     """Delete all points matching a filter (e.g., all chunks from a document)."""
@@ -96,4 +91,21 @@ def delete_by_filter(filter_dict, collection_name=COLLECTION_NAME):
         points_selector=qdrant_models.FilterSelector(
             filter=qdrant_models.Filter(**filter_dict)
         ),
+    )
+
+
+def delete_document_vectors(document_id, collection_name=COLLECTION_NAME):
+    """Delete all vectors belonging to a specific document."""
+    client.delete(
+        collection_name=collection_name,
+        points_selector=qdrant_models.FilterSelector(
+            filter=qdrant_models.Filter(
+                must=[
+                    qdrant_models.FieldCondition(
+                        key="document_id",
+                        match=qdrant_models.MatchValue(value=document_id)
+                    )
+                ]
+            )
+        )
     )
