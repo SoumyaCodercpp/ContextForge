@@ -21,7 +21,8 @@ Follow these guidelines:
 - Be concise and direct.
 - Cite specific details from the context when relevant.
 - If the context is insufficient, say: "The provided context does not contain enough information to answer this question."
-- Do not mention that you are using "context" or "provided text" in your answer unless necessary."""
+- Do not mention that you are using "context" or "provided text" in your answer unless necessary.
+- Do NOT include your reasoning or thinking process. Output only the final answer."""
 
 
 @dataclass
